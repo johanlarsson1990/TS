@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTable } from 'react-table'
 
-const  Tables = (column:Array<{}>, datas:Array<{}>) => {
+const  Tables = (column:any, datas:any) => {
   const columns = column;
   const data = datas;
   console.log(data)
