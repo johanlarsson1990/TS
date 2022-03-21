@@ -1,33 +1,41 @@
 import {useState, useEffect} from 'react';
-// import DatePicker from "react-datepicker";
+import { selectedUser } from '../header/Header';
+
+let user = "Malin";
+let project = "Project";
 
 const Timereport = () => {
     
-    const MyComponents = {
-        DatePicker: function DatePicker() {
+    const timereportForm = {
+        // DatePicker: function DatePicker() {
           
-          //<div>Imagine a {props.color} datepicker here.</div>;
-        }
+          
+        // }
       }
       return (
         <header>
-            <h1>Timereports</h1>
-            <div>  
-            <label htmlFor="date">Chose date:</label>             
-             <input type="date" id="date"></input>
-             
-          </div>
-          <div>
-              <h3>User:</h3>
-          </div>
-          <div>
-              <h3>Project: </h3>
-          </div>
-          <div>
-          <label htmlFor="note">Add note:</label>             
-             <input type="text" id="note"></input>
-          </div>
-          <button>SUBMIT TIMEREPORT</button>
+            <h1>Time Reports</h1>
+            <form>
+                <label htmlFor="date">Choose date: </label>             
+                <input type="date" id="date"></input>
+                <br></br>
+
+                <label htmlFor="user">User: </label>             
+                <input type="text" id="user" value={selectedUser} disabled ></input>
+                <br></br>
+
+                <label htmlFor="project">Project: </label>             
+                <input type="text" id="project" value={project} disabled ></input>
+                <br></br>
+
+                <label htmlFor="note">Add note: </label>             
+                <input type="text" id="note"></input>
+                <br></br>
+                
+                <button>SUBMIT TIMEREPORT</button>
+
+            </form>
+            
         </header>
         
         
