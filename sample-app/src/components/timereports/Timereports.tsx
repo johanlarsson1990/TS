@@ -1,11 +1,11 @@
 import {useState, useEffect} from 'react';
-import { selectedUser } from '../header/Header';
 
-let user = "Malin";
-let project = "Project";
 
-const Timereport = () => {
+let project = "";
+
+const Timereport = (props:any) => {
     
+    const {selectedUser} = props;
     const timereportForm = {
         // DatePicker: function DatePicker() {
           
@@ -21,7 +21,7 @@ const Timereport = () => {
                 <br></br>
 
                 <label htmlFor="user">User: </label>             
-                <input type="text" id="user" value={selectedUser} disabled ></input>
+                <input type="text" id="user" value={selectedUser || ""} disabled ></input>
                 <br></br>
 
                 <label htmlFor="project">Project: </label>             
@@ -31,11 +31,8 @@ const Timereport = () => {
                 <label htmlFor="note">Add note: </label>             
                 <input type="text" id="note"></input>
                 <br></br>
-                
-                <button>SUBMIT TIMEREPORT</button>
-
             </form>
-            
+            <button>SUBMIT TIMEREPORT</button>
         </header>
         
         
