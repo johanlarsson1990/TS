@@ -5,6 +5,7 @@ import Tables from './Tables'
 
 interface Proj {
     Project: string;
+    Id: string;
 }
 
 const Project = () => {

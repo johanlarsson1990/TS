@@ -8,11 +8,11 @@ const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 const notionSecret = process.env.NOTION_SECRET;
 const db = process.env.NOTION_DATABASE_PEOPLE_ID;
 const proj = process.env.NOTION_DATABASE_PROJECTS_ID;
-const testing = process.env.NOTION_DATABASE_TEST_ID;
+const timereports = process.env.NOTION_DATABASE_TIMEREPORT_ID;
 
 // Will provide an error to users who forget to create the .env file
 // with their Notion data in it
-if (!notionDatabaseId || !db || !proj || !testing || !notionSecret) {
+if (!notionDatabaseId || !db || !proj || !timereports || !notionSecret) {
   throw Error("Must define NOTION_SECRET and NOTION_DATABASE_ID in env");
 }
 
@@ -57,7 +57,8 @@ const server = http.createServer(async (req, res) => {
         // console.log(page.properties);
 
         return {
-          Users: page.properties.Name.title[0].plain_text
+          Users: page.properties.Name.title[0].plain_text,
+          //Id: page.id
         }
       });
       res.setHeader("Content-Type", "application/json");
@@ -81,6 +82,7 @@ const server = http.createServer(async (req, res) => {
             return {
                 Status: page.properties.Status.select.name,
                 Project: page.properties.Projectname.title[0].plain_text,
+                Id: page.id
             }
         });
       
@@ -91,10 +93,10 @@ const server = http.createServer(async (req, res) => {
 
     case "/test":
         const test = await notion.databases.query({
-            database_id: testing})
+            database_id: timereports})
 
         const prov = test.results.map((page: any) => {
-            console.log(page.properties.Person)
+            console.log(page.properties)
 
             return
         });
@@ -112,3 +114,56 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, host, () => {
   console.log(`Server is running on http://${host}:${port}`);
 });
+
+function Submit(setDate: Date, user: any, hours: number, project: any, note: Text){
+  const { Client } = require('@notionhq/client');
+
+  const notion = new Client({ auth: notionSecret });
+
+(async () => {
+  const response = await notion.pages.create({
+    parent: {
+      database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
+    },
+    properties: {
+      Date: {
+        date: [
+          {
+            start: setDate,
+          }
+        ]
+      },
+      Note: {
+        title: [
+          {
+            text: {
+              content: note,
+            },
+          },
+        ],
+      },
+      Person: {
+        relation: [
+          {
+            id: user,
+          },
+        ],
+      },
+      
+      Hours: {
+        number: hours,
+      },
+      Project: {
+        relation: [
+          {
+            id: project,
+          },
+        ],
+      },
+    },
+  });
+  console.log(response);
+})();
+
+
+}

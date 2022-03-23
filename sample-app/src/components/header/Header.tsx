@@ -17,6 +17,7 @@ function getIndex() {
 
 interface Person {
     Users: string;
+    Id: string;
 }
 
 const Header = (props:any) => {
@@ -34,6 +35,7 @@ const Header = (props:any) => {
           <h1>USERS</h1>
         <div>
          <select onChange={props.onChange}>
+           <option></option>
           {list.map((row, idx) => {
             return (
               <option key={idx} >
