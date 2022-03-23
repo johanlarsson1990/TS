@@ -1,17 +1,22 @@
 import {useState, useEffect} from 'react';
 
-
-let project = "";
+interface Proj {
+  Project: string;
+}
 
 const Timereport = (props:any) => {
     
     const {selectedUser} = props;
-    const timereportForm = {
-        // DatePicker: function DatePicker() {
-          
-          
-        // }
-      }
+    const [activeProjects, setActiveProjects] = useState<Proj[]>([]);
+
+    useEffect(() =>{
+        fetch('http://localhost:8000/proj')
+        .then((response) => response.json())
+        .then((response) => {
+          setActiveProjects(response)
+        })
+      }, []);
+    
       return (
         <header>
             <h1>Time Reports</h1>
@@ -24,8 +29,20 @@ const Timereport = (props:any) => {
                 <input type="text" id="user" value={selectedUser || ""} disabled ></input>
                 <br></br>
 
-                <label htmlFor="project">Project: </label>             
-                <input type="text" id="project" value={project} disabled ></input>
+                <label htmlFor="project">Project: </label>
+                <select id="project">
+                    {activeProjects.map((row, idx) => {
+                    return (
+                    <option key={idx} >
+                    {row.Project}
+                    </option>
+                    )
+                    })}
+                    </select>   
+                <br></br>
+
+                <label htmlFor="hours">Add hours: </label>             
+                <input type="number" id="hours"></input>
                 <br></br>
 
                 <label htmlFor="note">Add note: </label>             
@@ -34,10 +51,7 @@ const Timereport = (props:any) => {
             </form>
             <button>SUBMIT TIMEREPORT</button>
         </header>
-        
-        
         )
-
 }
 
 export default Timereport

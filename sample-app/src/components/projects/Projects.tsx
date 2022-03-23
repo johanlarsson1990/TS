@@ -7,7 +7,7 @@ interface Proj {
     Project: string;
 }
 
-const Header = () => {
+const Project = () => {
 
     const [list, setList] = useState<Proj[]>([]);
     useEffect(() =>{
@@ -42,4 +42,4 @@ const Header = () => {
     )
   }
   
-  export default Header
+  export default Project
