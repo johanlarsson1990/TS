@@ -78,8 +78,9 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
                 }
             });
             const projects = project.results.map((page) => {
-                // console.log(page.properties.Status.select);
+                //  console.log(page.properties.Hours.number);
                 return {
+                    Hours: page.properties.Hours.number,
                     Status: page.properties.Status.select.name,
                     Project: page.properties.Projectname.title[0].plain_text,
                 };
@@ -88,17 +89,36 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
             res.writeHead(200);
             res.end(JSON.stringify(projects));
             break;
-        case "/test":
-            const test = yield notion.databases.query({
-                database_id: testing
+        case "/allproj":
+            const allproj = yield notion.databases.query({
+                database_id: proj
             });
-            const prov = test.results.map((page) => {
-                console.log(page.properties.Person);
-                return;
+            const everyproject = allproj.results.map((page) => {
+                console.log(page.properties.HoursLeft.formula.number);
+                return {
+                    workedHours: page.properties.WorkedHours.rollup.number,
+                    hoursLeft: page.properties.HoursLeft.formula.number,
+                    totalHours: page.properties.Hours.number,
+                    allProjects: page.properties.Projectname.title[0].plain_text,
+                    everyStatus: page.properties.Status.select.name
+                };
             });
             res.setHeader("Content-Type", "application/json");
             res.writeHead(200);
-            res.end(JSON.stringify(prov));
+            res.end(JSON.stringify(everyproject));
+            break;
+        case "/time":
+            const time = yield notion.databases.query({
+                database_id: testing
+            });
+            const timereport = time.results.map((page) => {
+                console.log(page.properties.Person.relation);
+                return {};
+            });
+            res.setHeader("Content-Type", "application/json");
+            res.writeHead(200);
+            res.end(JSON.stringify(timereport));
+            break;
         default:
             res.setHeader("Content-Type", "application/json");
             res.writeHead(404);

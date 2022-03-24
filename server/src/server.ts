@@ -8,11 +8,11 @@ const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 const notionSecret = process.env.NOTION_SECRET;
 const db = process.env.NOTION_DATABASE_PEOPLE_ID;
 const proj = process.env.NOTION_DATABASE_PROJECTS_ID;
-const testing = process.env.NOTION_DATABASE_TEST_ID;
+const timereport = process.env.NOTION_DATABASE_TIMEREPORT_ID;
 
 // Will provide an error to users who forget to create the .env file
 // with their Notion data in it
-if (!notionDatabaseId || !db || !proj || !testing || !notionSecret) {
+if (!notionDatabaseId || !db || !proj || !timereport || !notionSecret) {
   throw Error("Must define NOTION_SECRET and NOTION_DATABASE_ID in env");
 }
 
@@ -77,8 +77,9 @@ const server = http.createServer(async (req, res) => {
         })
         const projects = project.results.map((page: any) => {
             
-            // console.log(page.properties.Status.select);
+            //  console.log(page.properties.Hours.number);
             return {
+                Hours: page.properties.Hours.number,
                 Status: page.properties.Status.select.name,
                 Project: page.properties.Projectname.title[0].plain_text,
             }
@@ -89,18 +90,40 @@ const server = http.createServer(async (req, res) => {
       res.end(JSON.stringify(projects));
     break;
 
-    case "/test":
-        const test = await notion.databases.query({
-            database_id: testing})
+    case "/allproj":
+        const allproj = await notion.databases.query({
+            database_id: proj})
 
-        const prov = test.results.map((page: any) => {
-            console.log(page.properties.Person)
+        const everyproject = allproj.results.map((page: any) => {
+            console.log(page.properties)
 
-            return
+            return {
+                workedHours: page.properties.WorkedHours.rollup.number,
+                hoursLeft: page.properties.HoursLeft.formula.number,
+                totalHours: page.properties.Hours.number,
+                allProjects: page.properties.Projectname.title[0].plain_text,
+                everyStatus: page.properties.Status.select.name
+            }
         });
       res.setHeader("Content-Type", "application/json");
       res.writeHead(200);
-      res.end(JSON.stringify(prov));
+      res.end(JSON.stringify(everyproject));
+      break;
+    case "/time":
+        const time = await notion.databases.query({
+            database_id: timereport})
+
+        const timereports = time.results.map((page: any) => {
+            // console.log(page.properties.Person.relation)
+
+            return {
+                
+            }
+        });
+      res.setHeader("Content-Type", "application/json");
+      res.writeHead(200);
+      res.end(JSON.stringify(timereports));
+      break;
     default:
       res.setHeader("Content-Type", "application/json");
       res.writeHead(404);
