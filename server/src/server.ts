@@ -135,3 +135,56 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, host, () => {
   console.log(`Server is running on http://${host}:${port}`);
 });
+
+function Submit(setDate: Date, user: any, hours: number, project: any, note: Text){
+  const { Client } = require('@notionhq/client');
+
+  const notion = new Client({ auth: notionSecret });
+
+(async () => {
+  const response = await notion.pages.create({
+    parent: {
+      database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
+    },
+    properties: {
+      Date: {
+        date: [
+          {
+            start: setDate,
+          }
+        ]
+      },
+      Note: {
+        title: [
+          {
+            text: {
+              content: note,
+            },
+          },
+        ],
+      },
+      Person: {
+        relation: [
+          {
+            id: user,
+          },
+        ],
+      },
+      
+      Hours: {
+        number: hours,
+      },
+      Project: {
+        relation: [
+          {
+            id: project,
+          },
+        ],
+      },
+    },
+  });
+  console.log(response);
+})();
+
+
+}
