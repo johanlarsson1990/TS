@@ -5,6 +5,7 @@ import { getValue } from "@testing-library/user-event/dist/utils";
 
 interface Person {
     Users: string;
+    Id: string;
 }
 
 
@@ -27,6 +28,7 @@ const Header = (props : any) => {
         <header>
             <h1>USERS</h1>
           <div>
+            {isPending && <div>LOADING USERS</div>}
            <select onChange={props.onChange}>
              <option>*************</option>
             {list.map((row, idx) => {

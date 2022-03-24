@@ -1,6 +1,8 @@
 require("dotenv").config();
 import http from "http";
 import { Client } from "@notionhq/client";
+import { prependOnceListener } from "process";
+
 
 
 // The dotenv library will read from your .env file into these values on `process.env`
@@ -54,9 +56,10 @@ const server = http.createServer(async (req, res) => {
         database_id: db})
       const people = users.results.map((page : any) => {
         
-        // console.log(page.properties);
+        //console.log(page);
 
         return {
+          Id: page.id,
           Users: page.properties.Name.title[0].plain_text
         }
       });
@@ -95,7 +98,7 @@ const server = http.createServer(async (req, res) => {
             database_id: proj})
 
         const everyproject = allproj.results.map((page: any) => {
-            console.log(page.properties)
+            // console.log(page.properties)
 
             return {
                 workedHours: page.properties.WorkedHours.rollup.number,
