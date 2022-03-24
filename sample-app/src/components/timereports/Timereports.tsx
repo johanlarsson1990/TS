@@ -5,6 +5,11 @@ interface Proj {
   Project: string;
 }
 
+interface Person {
+  Users: string;
+  Id: string;
+}
+
 const Timereport = (props:any) => {
     
     const {selectedUser} = props;
