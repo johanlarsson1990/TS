@@ -20,10 +20,10 @@ const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 const notionSecret = process.env.NOTION_SECRET;
 const db = process.env.NOTION_DATABASE_PEOPLE_ID;
 const proj = process.env.NOTION_DATABASE_PROJECTS_ID;
-const testing = process.env.NOTION_DATABASE_TEST_ID;
+const timereport = process.env.NOTION_DATABASE_TIMEREPORT_ID;
 // Will provide an error to users who forget to create the .env file
 // with their Notion data in it
-if (!notionDatabaseId || !db || !proj || !testing || !notionSecret) {
+if (!notionDatabaseId || !db || !proj || !timereport || !notionSecret) {
     throw Error("Must define NOTION_SECRET and NOTION_DATABASE_ID in env");
 }
 // Initializing the Notion client with your secret
@@ -58,7 +58,7 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
                 database_id: db
             });
             const people = users.results.map((page) => {
-                // console.log(page.properties);
+                console.log(page);
                 return {
                     Users: page.properties.Name.title[0].plain_text
                 };
@@ -94,7 +94,7 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
                 database_id: proj
             });
             const everyproject = allproj.results.map((page) => {
-                console.log(page.properties.HoursLeft.formula.number);
+                //console.log(page.properties)
                 return {
                     workedHours: page.properties.WorkedHours.rollup.number,
                     hoursLeft: page.properties.HoursLeft.formula.number,
@@ -109,15 +109,15 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
             break;
         case "/time":
             const time = yield notion.databases.query({
-                database_id: testing
+                database_id: timereport
             });
-            const timereport = time.results.map((page) => {
-                console.log(page.properties.Person.relation);
+            const timereports = time.results.map((page) => {
+                // console.log(page.properties.Person.relation)
                 return {};
             });
             res.setHeader("Content-Type", "application/json");
             res.writeHead(200);
-            res.end(JSON.stringify(timereport));
+            res.end(JSON.stringify(timereports));
             break;
         default:
             res.setHeader("Content-Type", "application/json");
@@ -128,3 +128,50 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
 server.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
 });
+function Submit(setDate, user, hours, project, note) {
+    const { Client } = require('@notionhq/client');
+    const notion = new Client({ auth: notionSecret });
+    (() => __awaiter(this, void 0, void 0, function* () {
+        const response = yield notion.pages.create({
+            parent: {
+                database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
+            },
+            properties: {
+                Date: {
+                    date: [
+                        {
+                            start: setDate,
+                        }
+                    ]
+                },
+                Note: {
+                    title: [
+                        {
+                            text: {
+                                content: note,
+                            },
+                        },
+                    ],
+                },
+                Person: {
+                    relation: [
+                        {
+                            id: user,
+                        },
+                    ],
+                },
+                Hours: {
+                    number: hours,
+                },
+                Project: {
+                    relation: [
+                        {
+                            id: project,
+                        },
+                    ],
+                },
+            },
+        });
+        console.log(response);
+    }))();
+}

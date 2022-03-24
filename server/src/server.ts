@@ -54,7 +54,7 @@ const server = http.createServer(async (req, res) => {
         database_id: db})
       const people = users.results.map((page : any) => {
         
-        // console.log(page.properties);
+        //console.log(page);
 
         return {
           Users: page.properties.Name.title[0].plain_text
@@ -95,7 +95,7 @@ const server = http.createServer(async (req, res) => {
             database_id: proj})
 
         const everyproject = allproj.results.map((page: any) => {
-            console.log(page.properties)
+            //console.log(page.properties)
 
             return {
                 workedHours: page.properties.WorkedHours.rollup.number,
