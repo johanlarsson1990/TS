@@ -136,7 +136,7 @@ server.listen(port, host, () => {
   console.log(`Server is running on http://${host}:${port}`);
 });
 
-function Submit(setDate: Date, user: any, hours: number, project: any, note: Text){
+function SubmitToNotion(setDate: Date, user: any, hours: number, project: any, note: Text){
   const { Client } = require('@notionhq/client');
 
   const notion = new Client({ auth: notionSecret });

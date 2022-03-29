@@ -55,8 +55,9 @@ const Timereport = (props:any) => {
                 <label htmlFor="note">Add note: </label>             
                 <input type="text" id="note" required></input>
                 <br></br>
+                <button type="submit">SUBMIT TIMEREPORT</button>
             </form>
-            <button >SUBMIT TIMEREPORT</button>
+            
             {/* onClick={Submit(setDate, user, hours, project, note)} */}
         </header>
         )
