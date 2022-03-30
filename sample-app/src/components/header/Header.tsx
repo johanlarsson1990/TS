@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import './header.css';
-import { getValue } from "@testing-library/user-event/dist/utils";
-
 
 export interface Person {
     Users: string;
     Id: string;
 }
-
-
 const Header = (props : any) => {
     const [isPending, setIsPending] = useState(true);
     const [list, setList] = useState<Person[]>([]);
@@ -45,4 +41,4 @@ const Header = (props : any) => {
       )
     }
     
-    export default Header
+export default Header

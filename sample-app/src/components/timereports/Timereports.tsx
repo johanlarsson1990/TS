@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-//import {SubmitToNotion} from "../../../../server/src/server"
 import {Proj} from "../projects/Projects"
 import {Person} from "../header/Header"
 
@@ -16,7 +15,6 @@ const Timereport = (props:any) => {
       .then((response) => response.json())
       .then((response) => {
         setActiveProjects(response)
-        //console.log(response)
       })
    }, []);
       
@@ -25,7 +23,6 @@ const Timereport = (props:any) => {
     fetch('http://localhost:8000/person')
       .then((response) => response.json())
       .then((response) => {
-        console.log(response)
         setList(response)
       });
    },[]);
@@ -33,12 +30,6 @@ const Timereport = (props:any) => {
       function SubmitFormToNotion(){
         try{
           let user = getId()
-          console.log("User: " + user)
-          console.log("Date: " + date)
-          console.log("Hours: " + hours)
-          console.log("Note: " + note)
-          console.log("Project: " + activeProjects[0].Id)
-          
           fetch('http://localhost:4000/submitFormToNotion', {
             method: "post",
             headers: {
@@ -63,7 +54,6 @@ const Timereport = (props:any) => {
           if(list[i].Users === selectedUser){
             return list[i].Id
           }
-          
         }
       }
     
@@ -73,7 +63,6 @@ const Timereport = (props:any) => {
             <form>
                 <label htmlFor="date">Choose date: </label>             
                 <input type="date" id="date" onChange={(e) => setDate(e.target.value)} required></input>
-                
                 <br></br>
 
                 <label htmlFor="user">User: </label>             
