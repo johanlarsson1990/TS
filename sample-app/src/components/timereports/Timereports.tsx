@@ -99,9 +99,10 @@ const Timereport = (props:any) => {
                 <label htmlFor="note">Add note: </label>             
                 <input type="text" id="note" onChange={(e) => setNote(e.target.value)} required></input>
                 <br></br>
+                <button type="submit" onClick={SubmitFormToNotion}>SUBMIT TIMEREPORT</button>
                 
             </form>
-            <button type="submit" onClick={SubmitFormToNotion}>SUBMIT TIMEREPORT</button>
+            
         </header>
       )
 }

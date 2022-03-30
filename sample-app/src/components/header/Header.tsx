@@ -28,7 +28,8 @@ const Header = (props : any) => {
         <header>
             <h1>USERS</h1>
           <div>
-           <select onChange={props.onChange}>
+            <label htmlFor="users">Select user: </label>
+           <select id="users" onChange={props.onChange}>
              <option>*************</option>
             {list.map((row, idx) => {
               return (
@@ -39,7 +40,6 @@ const Header = (props : any) => {
             })}
            
           </select> 
-          <button>LOGIN</button>
           </div>
         </header>
       )
