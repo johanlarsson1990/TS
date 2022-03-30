@@ -1,6 +1,12 @@
 require("dotenv").config();
 import http from "http";
 import { Client } from "@notionhq/client";
+import { json } from "stream/consumers";
+var bodyparser = require("body-parser")
+var jsonParser = bodyparser.json()
+const express = require("express")
+const cors = require("cors")
+//import { expUser, expProj } from "../../sample-app/src/components/timereports/Timereports"
 
 
 // The dotenv library will read from your .env file into these values on `process.env`
@@ -57,7 +63,8 @@ const server = http.createServer(async (req, res) => {
         // console.log(page.properties);
 
         return {
-          Users: page.properties.Name.title[0].plain_text
+          Users: page.properties.Name.title[0].plain_text,
+          Id: page.id
         }
       });
       res.setHeader("Content-Type", "application/json");
@@ -79,6 +86,7 @@ const server = http.createServer(async (req, res) => {
             
             //  console.log(page.properties.Hours.number);
             return {
+                Id: page.id,
                 Hours: page.properties.Hours.number,
                 Status: page.properties.Status.select.name,
                 Project: page.properties.Projectname.title[0].plain_text,
@@ -135,56 +143,3 @@ const server = http.createServer(async (req, res) => {
 server.listen(port, host, () => {
   console.log(`Server is running on http://${host}:${port}`);
 });
-
-function SubmitToNotion(setDate: Date, user: any, hours: number, project: any, note: Text){
-  const { Client } = require('@notionhq/client');
-
-  const notion = new Client({ auth: notionSecret });
-
-(async () => {
-  const response = await notion.pages.create({
-    parent: {
-      database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
-    },
-    properties: {
-      Date: {
-        date: [
-          {
-            start: setDate,
-          }
-        ]
-      },
-      Note: {
-        title: [
-          {
-            text: {
-              content: note,
-            },
-          },
-        ],
-      },
-      Person: {
-        relation: [
-          {
-            id: user,
-          },
-        ],
-      },
-      
-      Hours: {
-        number: hours,
-      },
-      Project: {
-        relation: [
-          {
-            id: project,
-          },
-        ],
-      },
-    },
-  });
-  console.log(response);
-})();
-
-
-}

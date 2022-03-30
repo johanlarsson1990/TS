@@ -15,6 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const http_1 = __importDefault(require("http"));
 const client_1 = require("@notionhq/client");
+var bodyparser = require("body-parser");
+var jsonParser = bodyparser.json();
+const express = require("express");
+const cors = require("cors");
+//import { expUser, expProj } from "../../sample-app/src/components/timereports/Timereports"
 // The dotenv library will read from your .env file into these values on `process.env`
 const notionDatabaseId = process.env.NOTION_DATABASE_ID;
 const notionSecret = process.env.NOTION_SECRET;
@@ -60,7 +65,8 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
             const people = users.results.map((page) => {
                 // console.log(page.properties);
                 return {
-                    Users: page.properties.Name.title[0].plain_text
+                    Users: page.properties.Name.title[0].plain_text,
+                    Id: page.id
                 };
             });
             res.setHeader("Content-Type", "application/json");
@@ -80,6 +86,7 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
             const projects = project.results.map((page) => {
                 //  console.log(page.properties.Hours.number);
                 return {
+                    Id: page.id,
                     Hours: page.properties.Hours.number,
                     Status: page.properties.Status.select.name,
                     Project: page.properties.Projectname.title[0].plain_text,
@@ -119,6 +126,60 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
             res.writeHead(200);
             res.end(JSON.stringify(timereports));
             break;
+        case "/submitFormToNotion":
+            //SubmitToNotion()
+            // try{
+            //   //let newDate = new Date(setDate)
+            //   const user = req
+            //   const { Client } = require('@notionhq/client');
+            //   const notion = new Client({ auth: notionSecret });
+            //   (async () => {
+            //   const response = await notion.pages.create({
+            //   parent: {
+            //     database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
+            //   },
+            //   properties: {
+            //     Date: {
+            //       date: [
+            //         {
+            //           start: "2022-03-29",
+            //         }
+            //       ]
+            //     },
+            //     Note: {
+            //       title: [
+            //         {
+            //           text: {
+            //             content: "Meeting",
+            //           },
+            //         },
+            //       ],
+            //     },
+            //     Person: {
+            //       relation: [
+            //         {
+            //           id: "3169a85c-5b54-4a76-93c5-603afc5fa9d1",
+            //         },
+            //       ],
+            //     },
+            //     Hours: {
+            //       number: 0,
+            //     },
+            //     Project: {
+            //       relation: [
+            //         {
+            //           id: "64e896a6-a124-4af4-8308-4aadcfe0e7a3",
+            //         },
+            //       ],
+            //     },
+            //   },
+            // });
+            // console.log(response);
+            // })();
+            // }catch(error){
+            //   console.log(error)
+            // }
+            break;
         default:
             res.setHeader("Content-Type", "application/json");
             res.writeHead(404);
@@ -128,21 +189,24 @@ const server = http_1.default.createServer((req, res) => __awaiter(void 0, void 
 server.listen(port, host, () => {
     console.log(`Server is running on http://${host}:${port}`);
 });
-function SubmitToNotion(setDate, user, hours, project, note) {
-    const { Client } = require('@notionhq/client');
-    const notion = new Client({ auth: notionSecret });
-    (() => __awaiter(this, void 0, void 0, function* () {
+const app = express();
+app.use(cors());
+app.post("/submitFormToNotion'", jsonParser, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { results } = yield notion.request({ path: `pages`, method: `post` });
+    const user = req.body.user;
+    const project = req.body.project;
+    const hours = req.body.hours;
+    const date = req.body.date;
+    const note = req.body.note;
+    console.log("In app.post");
+    try {
         const response = yield notion.pages.create({
-            parent: {
-                database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
-            },
+            parent: { database_id: timereport },
             properties: {
                 Date: {
-                    date: [
-                        {
-                            start: setDate,
-                        }
-                    ]
+                    date: {
+                        start: date,
+                    }
                 },
                 Note: {
                     title: [
@@ -173,5 +237,66 @@ function SubmitToNotion(setDate, user, hours, project, note) {
             },
         });
         console.log(response);
-    }))();
-}
+        console.log("Success!!!");
+    }
+    catch (error) {
+        console.log("Error: " + error);
+    }
+}));
+// const client = new Client({ auth: notionSecret})
+// const dbId = timereport
+// app.listen(port, host, () => {
+//   console.log()
+// })
+// function SubmitToNotion(){
+//   try{
+//     //let newDate = new Date(setDate)
+//     const { Client } = require('@notionhq/client');
+//     const notion = new Client({ auth: notionSecret });
+//     (async () => {
+//     const response = await notion.pages.create({
+//     parent: {
+//       database_id: process.env.NOTION_DATABASE_TIMEREPORT_ID,
+//     },
+//     properties: {
+//       Date: {
+//         date: [
+//           {
+//             start: newDate,
+//           }
+//         ]
+//       },
+//       Note: {
+//         title: [
+//           {
+//             text: {
+//               content: note,
+//             },
+//           },
+//         ],
+//       },
+//       Person: {
+//         relation: [
+//           {
+//             id: user,
+//           },
+//         ],
+//       },
+//       Hours: {
+//         number: hours,
+//       },
+//       Project: {
+//         relation: [
+//           {
+//             id: project,
+//           },
+//         ],
+//       },
+//     },
+//   });
+//   console.log(response);
+//   })();
+//   }catch(error){
+//     console.log(error)
+//   }
+//}

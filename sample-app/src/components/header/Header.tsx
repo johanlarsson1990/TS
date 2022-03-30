@@ -3,7 +3,7 @@ import './header.css';
 import { getValue } from "@testing-library/user-event/dist/utils";
 
 
-interface Person {
+export interface Person {
     Users: string;
     Id: string;
 }
@@ -17,7 +17,7 @@ const Header = (props : any) => {
         fetch('http://localhost:8000/person')
         .then((response) => response.json())
         .then((response) => {
-          console.log(response)
+          //console.log(response)
           setList(response)
         });
         setIsPending(false);

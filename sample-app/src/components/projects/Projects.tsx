@@ -4,10 +4,11 @@ import React from 'react';
 import Tables from './Tables'
 import { useColumnOrder } from 'react-table';
 
-interface Proj {
+export interface Proj {
     Project: string;
     Status: any;
     Hours: number;
+    Id: string;
 }
 interface allProjects {
     allProjects: string;
@@ -36,7 +37,7 @@ const Projects = () => {
         fetch('http://localhost:8000/proj')
         .then((response) => response.json())
         .then((response) => {
-          console.log(response)
+          //console.log(response)
           setList(response)
         })
       }, []);
